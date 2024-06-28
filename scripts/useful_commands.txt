@@ -1,0 +1,8 @@
+# Reload gpg-agent if getting No Pinentry errors
+gpgconf --reload gpg-agent
+
+
+
+
+# Copy hardware config
+cp /etc/nixos/hardware-configuration.nix ./
