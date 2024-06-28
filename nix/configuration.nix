@@ -33,10 +33,14 @@
     {
       users = ["jose"];
       commands = [
+        # {
+        #     command = "ALL";
+        #     options = ["NOPASSWD"];
+        # }
         {
-            command = "ALL";
+            command = "/run/current-system/sw/bin/nixos-rebuild";
             options = ["NOPASSWD"];
-          }
+        }
       ];
     }
     ];
