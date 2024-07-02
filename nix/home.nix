@@ -1,9 +1,9 @@
 {config, pkgs, ...}:
 let
   shellAliases = {
-      nrs = "sudo nixos-rebuild switch --flake ~/.dotfiles/nix";
-      enc = "nvim ~/.dotfiles/nix/configuration.nix";
-      evc = "nvim ~/.dotfiles/nvim/init.lua";
+      nrs = "sudo nixos-rebuild switch --flake /run/media/jose/SHARED_STRG/dotfiles/nix/";
+      enc = "nvim /run/media/jose/SHARED_STRG/dotfiles/nix/configuration.nix";
+      evc = "nvim /run/media/jose/SHARED_STRG/dotfiles/nvim/init.lua";
     };
 in 
 {
@@ -16,10 +16,16 @@ in
     recursive = true;
   };
 
+  # link fonts
+  home.file.".local/share/fonts" = {
+    source = ../fonts;
+    recursive = true;
+  };
+
   # link qemu config file
   home.file.".config/libvirt/qemu.conf" = {
     source = ../configs/qemu.conf;
-    recursive = true;
+    recursive = false;
   };
 
   home.packages = with pkgs; [

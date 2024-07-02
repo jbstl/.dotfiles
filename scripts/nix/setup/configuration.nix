@@ -1,8 +1,8 @@
 # Edit this configuration file to define what should be installed on
-# your system.  Help is available in the configuration.nix(5) man page
-# and in the NixOS manual (accessible by running ‘nixos-help’).
+# your system. Help is available in the configuration.nix(5) man page, on
+# https://search.nixos.org/options and in the NixOS manual (`nixos-help`).
 
-{ config, pkgs, ... }:
+{ config, lib, pkgs, ... }:
 
 {
   imports =
@@ -10,8 +10,7 @@
       ./hardware-configuration.nix
     ];
 
-
-  # Setup the bootloader for LUKS
+  # Use the systemd-boot EFI boot loader.
   boot = {
     loader = {
       efi.canTouchEfiVariables = true;
@@ -19,35 +18,11 @@
             enable = true;
             device = "nodev";
             efiSupport = true;
-            efiInstallAsRemovable = false;
       };
     };
 
-    initrd.luks.devices.cryptroot.device = "/dev/disk/by-uuid/a42d30ca-2d5f-4af0-9175-7601ef1c4098";
-    kernelParams = ["intel_iommu=on" "iommu=pt"];
-    kernelModules = ["vfio_pci" "vfio" "vfio_iommu_type1"];
+    initrd.luks.devices.cryptroot.device = "/dev/disk/by-uuid/190c8ddf-4bc9-4a86-8f19-0c5ca654d2c2";
   };
-
-  # Turn off requirement to put in password for sudo commands
-  security.sudo.extraRules = [
-    {
-      users = ["jose"];
-      commands = [
-        # {
-        #     command = "ALL";
-        #     options = ["NOPASSWD"];
-        # }
-        {
-            command = "/run/current-system/sw/bin/lsblk";
-            options = ["NOPASSWD"];
-        }
-        {
-            command = "/run/current-system/sw/bin/nixos-rebuild";
-            options = ["NOPASSWD"];
-        }
-      ];
-    }
-    ];
 
   networking.hostName = "jbstl"; # Define your hostname.
   networking.networkmanager.enable = true;  # Easiest to use and most distros use this by default.
@@ -56,7 +31,7 @@
   # networking.proxy.default = "http://user:password@proxy:port/";
   # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
 
-  # Set your time zone.
+   # Set your time zone.
   time.timeZone = "America/Detroit";
 
   # Select internationalisation properties.
@@ -76,28 +51,21 @@
 
   # Enable the X11 windowing system.
   # You can disable this if you're only using the Wayland session.
-  services.xserver = {
-    enable = true;
-    displayManager.lightdm.enable = true;
-  };
+  services.xserver.enable = true;
 
   # Enable the KDE Plasma Desktop Environment.
-  services.displayManager = {
-    autoLogin.enable = true;
-    autoLogin.user = "jose";
-    defaultSession = "plasma";
-  };
-  # services.getty.autologinUser = "jose";
+  services.displayManager.sddm.enable = true;
   services.desktopManager.plasma6.enable = true;
 
   # Configure keymap in X11
-  services.xserver.xkb = {
+  services.xserver = {
     layout = "us";
-    variant = "";
+    xkbVariant = "";
   };
 
+
   # Enable CUPS to print documents.
-  services.printing.enable = true;
+  # services.printing.enable = true;
 
   # Enable sound with pipewire.
   hardware.pulseaudio.enable = false;
@@ -115,59 +83,27 @@
     #media-session.enable = true;
   };
 
-  # Enable touchpad support (enabled default in most desktopManager).
-  # services.xserver.libinput.enable = true;
-  
-  # Enable copy and pasting into VM 
-  # services.spice-vdagentd.enable = true;
-  
-  # Enable virtualisation
- virtualisation.libvirtd = {
-  enable = true;
-  qemu = {
-    package = pkgs.qemu_kvm;
-    runAsRoot = true;
-    swtpm.enable = true;
-    ovmf = {
-      enable = true;
-      packages = [(pkgs.OVMF.override {
-        secureBoot = true;
-        tpmSupport = true;
-      }).fd];
-    };
-  };
-};
-
-
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.jose = {
     isNormalUser = true;
     description = "Jose";
-    extraGroups = [ "networkmanager" "wheel" "libvirtd"];
+    extraGroups = [ "networkmanager" "wheel" ];
     packages = with pkgs; [
       kdePackages.kate
-      kdePackages.kcalc
-      kdePackages.filelight
-      fzf
-      ripgrep
-      yakuake
-      pciutils
-      usbutils
-      logseq
-      zotero
-      # nerdfonts
-      nodejs_22
-      jetbrains-mono
-      vlc
-      mixxx
+      # virt-manager
+      #fzf
+      #ripgrep
+      #yakuake
+      #nerdfonts
+      # nodejs_22
     ];
   };
 
-  fonts.packages = with pkgs; [
-    eb-garamond
-  ];
 
-  # Set the default shell to zsh
+  # Enable touchpad support (enabled default in most desktopManager).
+  # services.libinput.enable = true;
+
+# Set the default shell to zsh
   users.defaultUserShell = pkgs.zsh;
 
   programs.zsh.enable = true;
@@ -178,31 +114,15 @@
 
   programs.firefox.enable = true;
 
-  programs.virt-manager.enable = true;
-
-  services.hardware.bolt.enable = true;
-
-  # programs.gnupg.agent = {
-  #     enable = true;
-  #     enableSSHSupport = true;
-  # };
-  # services.pcscd.enable = true;
-
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-  #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
   #  wget
-      # bolt
-      # kdePackages.plasma-thunderbolt
       neovim
       appimage-run
-      unzip
-      # Required for gpg
-      # pinentry-gtk2
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -224,14 +144,29 @@
   # Or disable the firewall altogether.
   # networking.firewall.enable = false;
 
-  # This value determines the NixOS release from which the default
-  # settings for stateful data, like file locations and database versions
-  # on your system were taken. It‘s perfectly fine and recommended to leave
-  # this value at the release version of the first install of this system.
-  # Before changing this value read the documentation for this option
-  # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
+  # Copy the NixOS configuration file and link it from the resulting system
+  # (/run/current-system/configuration.nix). This is useful in case you
+  # accidentally delete configuration.nix.
+  # system.copySystemConfiguration = true;
+
+  # This option defines the first version of NixOS you have installed on this particular machine,
+  # and is used to maintain compatibility with application data (e.g. databases) created on older NixOS versions.
+  #
+  # Most users should NEVER change this value after the initial install, for any reason,
+  # even if you've upgraded your system to a new NixOS release.
+  #
+  # This value does NOT affect the Nixpkgs version your packages and OS are pulled from,
+  # so changing it will NOT upgrade your system - see https://nixos.org/manual/nixos/stable/#sec-upgrading for how
+  # to actually do that.
+  #
+  # This value being lower than the current NixOS release does NOT mean your system is
+  # out of date, out of support, or vulnerable.
+  #
+  # Do NOT change this value unless you have manually inspected all the changes it would make to your configuration,
+  # and migrated your data accordingly.
+  #
+  # For more information, see `man configuration.nix` or https://nixos.org/manual/nixos/stable/options#opt-system.stateVersion .
   system.stateVersion = "24.05"; # Did you read the comment?
 
-  nix.settings.experimental-features = ["nix-command" "flakes"];
-
 }
+

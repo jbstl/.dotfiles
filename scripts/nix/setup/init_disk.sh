@@ -127,7 +127,7 @@ parted -a opt --script "${DISK_PATH}" \
 	set 1 esp on \
 	name 1 boot \
 	set 2 lvm on \
-	name 2 root
+	name 2 cryptroot
 
 # Adjust disk path for NVMe if --nvme flag is provided
 if $NVME_FLAG; then
@@ -210,10 +210,10 @@ fi
 
 # Process additional logical volume flags
 for lv_flag in "${LVOL_FLAGS[@]}"; do
-	echo "LV_FLAG: $lv_flag"
-	echo "ROOT: $ROOT_MOUNT_DIR"
-#	IFS=',' read -r lv_name lv_size lv_fs lv_mount_point <<<"$lv_flag"
-#	create_and_mount_lv "$lv_name" "$lv_size" "$lv_fs" "$lv_mount_point"
+#	echo "LV_FLAG: $lv_flag"
+#	echo "ROOT: $ROOT_MOUNT_DIR"
+	IFS=',' read -r lv_name lv_size lv_fs lv_mount_point <<<"$lv_flag"
+	create_and_mount_lv "$lv_name" "$lv_size" "$lv_fs" "$lv_mount_point"
 done
 
 log "Disk initialization complete"
