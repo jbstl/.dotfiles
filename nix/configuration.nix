@@ -5,6 +5,11 @@
 { config, pkgs, ... }:
 
 {
+
+  # nixpkgs.overlays = [
+  #   (import ./overlays/nvim_overlay.nix)
+  # ];
+
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
@@ -160,6 +165,15 @@
       jetbrains-mono
       vlc
       mixxx
+      geckodriver
+      chromedriver
+      pass
+      fd
+      evcxr
+      jupyter
+      rustup
+      nix-index
+      sqlitebrowser
     ];
   };
 
@@ -181,6 +195,15 @@
   programs.virt-manager.enable = true;
 
   services.hardware.bolt.enable = true;
+
+  # programs.nix-ld = {
+  #   enable = true;
+  #   libraries = with pkgs; [
+  #     stdenv.cc.cc.lib
+  #   ];
+  # };
+
+  # services.jupyter.enable = true;
 
   # programs.gnupg.agent = {
   #     enable = true;

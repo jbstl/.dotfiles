@@ -49,10 +49,11 @@ in
 
     #rust
     cargo
+    # rustup
     rust-analyzer
     
     #python
-    python3
+    # python3
 
     #go
     go
