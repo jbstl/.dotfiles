@@ -3,12 +3,12 @@
 
   inputs = {
     nixpkgs = {
-      url = "github:NixOs/nixpkgs/nixos-24.05";
-      # url = "github:NixOs/nixpkgs/nixos-unstable";
+      # url = "github:NixOs/nixpkgs/nixos-24.05";
+      url = "github:NixOs/nixpkgs/nixos-unstable";
     };
     home-manager = {
-      url = "github:nix-community/home-manager/release-24.05";
-      # url = "github:nix-community/home-manager";
+      url = "github:nix-community/home-manager";
+      # url = "github:nix-community/home-manager/release-24.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nix-ld = {
@@ -19,26 +19,27 @@
 
   outputs = {self, nixpkgs, home-manager, nix-ld, ... }:
     let 
+      unstableNixpkgs = nixpkgs.legacyPackages.${nixpkgs.system};
       lib = nixpkgs.lib;
     in
     {
       nixosConfigurations = {
         jbstl = lib.nixosSystem {
           system = "x86_64-linux";
-	  modules = [ ./configuration.nix 
+          modules = [ ./configuration.nix 
+
             # make home-manager a module of nixos so that home-manager config
-	    # will be deployed automatically
-	    home-manager.nixosModules.home-manager {
+            # will be deployed automatically
+            home-manager.nixosModules.home-manager {
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
               home-manager.users.jose = import ./home.nix;
-	     }
+            }
 
-      nix-ld.nixosModules.nix-ld
-      { programs.nix-ld.dev.enable = true; }
-
-
-	  ];
+            nix-ld.nixosModules.nix-ld
+            { programs.nix-ld.dev.enable = true; }
+            # (import ./overlays/nvim_overlay.nix)
+          ];
         };
       };
     };

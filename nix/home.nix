@@ -2,6 +2,7 @@
 let
   shellAliases = {
       nrs = "sudo nixos-rebuild switch --flake /run/media/jose/SHARED_STRG/dotfiles/nix/";
+      nrsu = "sudo nixos-rebuild switch --update --flake /run/media/jose/SHARED_STRG/dotfiles/nix/";
       enc = "nvim /run/media/jose/SHARED_STRG/dotfiles/nix/configuration.nix";
       evc = "nvim /run/media/jose/SHARED_STRG/dotfiles/nvim/init.lua";
     };
@@ -27,6 +28,12 @@ in
     source = ../configs/qemu.conf;
     recursive = false;
   };
+  
+  # link zsh scripts
+  home.file.".config/zsh/scripts" = {
+    source = ../scripts/zsh;
+    recursive = true;
+  };
 
   home.packages = with pkgs; [
     #browsers
@@ -41,7 +48,7 @@ in
     tree
     unzip
     gparted
-    bitwarden
+    # bitwarden
     lazygit
 
     #c
@@ -49,8 +56,9 @@ in
 
     #rust
     cargo
+    cargo-generate
     # rustup
-    rust-analyzer
+    # rust-analyzer
     
     #python
     # python3
@@ -59,8 +67,10 @@ in
     go
 
     #communication
-    discord
+    # discord
     slack
+
+    devenv
   ];
 
   programs.git = {
@@ -88,7 +98,17 @@ in
   programs.zsh = {
     enable = true;
     shellAliases = shellAliases;
+    # eval "$(direnv hook zsh)"
+    initExtra = ''
+    '';
   };
+
+  # programs.direnv = {
+  #   enable = true;
+  #   nix-direnv.enable = true;
+  #   enableZshIntegration = true;
+  #   enableBashIntegration = true;
+  # };
   services.ssh-agent.enable = true;
 
   # Determines the home manager release that the configuration is compatible

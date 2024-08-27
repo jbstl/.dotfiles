@@ -13,6 +13,7 @@ require("lazy").setup({
     { "LazyVim/LazyVim", import = "lazyvim.plugins" },
     -- import any extras modules here
     { import = "lazyvim.plugins.extras.coding.mini-surround" },
+    { import = "lazyvim.plugins.extras.coding.luasnip" },
 
 
     { import = "lazyvim.plugins.extras.dap.core" },
@@ -67,3 +68,6 @@ require("lazy").setup({
     },
   },
 })
+
+-- load rust10x snippets 
+require("luasnip.loaders.from_vscode").lazy_load({ paths = { "./snippets/rust10x-vscode" } })

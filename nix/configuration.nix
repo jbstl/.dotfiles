@@ -81,16 +81,20 @@
 
   # Enable the X11 windowing system.
   # You can disable this if you're only using the Wayland session.
-  services.xserver = {
-    enable = true;
-    displayManager.lightdm.enable = true;
-  };
+  # services.xserver = {
+  #   enable = true;
+  #   displayManager.lightdm.enable = true;
+  # };
 
   # Enable the KDE Plasma Desktop Environment.
   services.displayManager = {
     autoLogin.enable = true;
     autoLogin.user = "jose";
     defaultSession = "plasma";
+    sddm = {
+      enable = true;
+      wayland.enable = true;
+    };
   };
   # services.getty.autologinUser = "jose";
   services.desktopManager.plasma6.enable = true;
@@ -148,7 +152,7 @@
   users.users.jose = {
     isNormalUser = true;
     description = "Jose";
-    extraGroups = [ "networkmanager" "wheel" "libvirtd"];
+    extraGroups = [ "networkmanager" "wheel" "libvirtd" "docker"];
     packages = with pkgs; [
       kdePackages.kate
       kdePackages.kcalc
@@ -160,7 +164,6 @@
       usbutils
       logseq
       zotero
-      # nerdfonts
       nodejs_22
       jetbrains-mono
       vlc
@@ -172,13 +175,18 @@
       evcxr
       jupyter
       rustup
+      rust-analyzer
       nix-index
       sqlitebrowser
+      zoom-us
+      # wayland clipboard
+      wl-clipboard-rs
     ];
   };
 
   fonts.packages = with pkgs; [
     eb-garamond
+    nerdfonts
   ];
 
   # Set the default shell to zsh
@@ -196,6 +204,18 @@
 
   services.hardware.bolt.enable = true;
 
+  services.cron.enable = true;
+
+  # temporary until logseq is updated
+  nixpkgs.config.permittedInsecurePackages = [
+                "electron-27.3.11"
+              ];
+
+  virtualisation.docker = {
+    enable = true;
+    rootless.enable = true;
+    rootless.setSocketVariable = true;
+  };
   # programs.nix-ld = {
   #   enable = true;
   #   libraries = with pkgs; [
@@ -221,7 +241,7 @@
   #  wget
       # bolt
       # kdePackages.plasma-thunderbolt
-      neovim
+      # neovim
       appimage-run
       unzip
       # Required for gpg
