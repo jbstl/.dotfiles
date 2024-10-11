@@ -1,0 +1,27 @@
+{
+	"10x-example-rs": {
+		"prefix": "10x-example-rs-01",
+		"body": [
+			"fn main() -> Result<(), Box<dyn std::error::Error>> {",
+			"\t${2}println!(\"Hello, world!\");",
+			"",
+			"\tOk(())",
+			"}",
+			""
+		],
+	},
+
+	"10x-example-rs-async": {
+		"prefix": "10x-example-rs-02-async",
+		"body": [
+			"#[tokio::main]",
+			"async fn main() -> Result<(), Box<dyn std::error::Error>> {",
+			"\t${2}println!(\"Hello, world!\");",
+			"",
+			"\tOk(())",
+			"}",
+			""
+		],
+	},
+
+}

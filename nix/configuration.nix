@@ -81,15 +81,16 @@
 
   # Enable the X11 windowing system.
   # You can disable this if you're only using the Wayland session.
-  # services.xserver = {
-  #   enable = true;
-  #   displayManager.lightdm.enable = true;
-  # };
+  services.xserver = {
+    enable = true;
+    # displayManager.lightdm.enable = true;
+    # displayManager.sddm.enable = true;
+  };
 
   # Enable the KDE Plasma Desktop Environment.
   services.displayManager = {
-    autoLogin.enable = true;
-    autoLogin.user = "jose";
+    # autoLogin.enable = true;
+    # autoLogin.user = "jose";
     defaultSession = "plasma";
     sddm = {
       enable = true;
@@ -99,6 +100,13 @@
   # services.getty.autologinUser = "jose";
   services.desktopManager.plasma6.enable = true;
 
+  # services.xrdp = {
+  #   enable = true;
+  #   defaultWindowManager = "startplasma-x11";
+  #   openFirewall = true;
+  #   port = 3399;
+  # };
+
   # Configure keymap in X11
   services.xserver.xkb = {
     layout = "us";
@@ -106,7 +114,7 @@
   };
 
   # Enable CUPS to print documents.
-  services.printing.enable = true;
+  # services.printing.enable = true;
 
   # Enable sound with pipewire.
   hardware.pulseaudio.enable = false;
@@ -123,6 +131,10 @@
     # no need to redefine it in your config for now)
     #media-session.enable = true;
   };
+
+  nix.settings.trusted-users = ["jose"];
+
+  # services.tailscale.enable = true;
 
   # Enable touchpad support (enabled default in most desktopManager).
   # services.xserver.libinput.enable = true;

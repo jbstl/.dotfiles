@@ -5,6 +5,7 @@ let
       nrsu = "sudo nixos-rebuild switch --update --flake /run/media/jose/SHARED_STRG/dotfiles/nix/";
       enc = "nvim /run/media/jose/SHARED_STRG/dotfiles/nix/configuration.nix";
       evc = "nvim /run/media/jose/SHARED_STRG/dotfiles/nvim/init.lua";
+      ds = "devenv shell";
     };
 in 
 {
@@ -71,6 +72,9 @@ in
     slack
 
     devenv
+
+    # rustdesk
+    tigervnc
   ];
 
   programs.git = {
@@ -98,17 +102,17 @@ in
   programs.zsh = {
     enable = true;
     shellAliases = shellAliases;
-    # eval "$(direnv hook zsh)"
     initExtra = ''
+    eval "$(direnv hook zsh)"
     '';
   };
 
-  # programs.direnv = {
-  #   enable = true;
-  #   nix-direnv.enable = true;
-  #   enableZshIntegration = true;
-  #   enableBashIntegration = true;
-  # };
+  programs.direnv = {
+    enable = true;
+    nix-direnv.enable = true;
+    enableZshIntegration = true;
+    enableBashIntegration = true;
+  };
   services.ssh-agent.enable = true;
 
   # Determines the home manager release that the configuration is compatible
