@@ -12,6 +12,13 @@ return {
     "nvim-telescope/telescope.nvim", -- Optional: For using slash commands
     { "stevearc/dressing.nvim", opts = {} }, -- Optional: Improves the default Neovim UI
   },
+  opts = {
+    strategies = {
+      chat = {
+        adapter = "openai",
+      }
+    },
+  },
   config = function()
       require("codecompanion").setup({
         adapters = {
@@ -22,7 +29,7 @@ return {
               },
               schema = {
                 model = {
-                  default = "gpt-4o-mini",
+                  default = "gpt-4.1-mini",
                 },
               },
             })

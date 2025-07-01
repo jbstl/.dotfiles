@@ -84,7 +84,8 @@
   services.xserver = {
     enable = true;
     # displayManager.lightdm.enable = true;
-    # displayManager.sddm.enable = true;
+    displayManager.sddm.enable = true;
+    # displayManager.plasma6.enable = true;
   };
 
   # Enable the KDE Plasma Desktop Environment.
@@ -100,12 +101,12 @@
   # services.getty.autologinUser = "jose";
   services.desktopManager.plasma6.enable = true;
 
-  # services.xrdp = {
-  #   enable = true;
-  #   defaultWindowManager = "startplasma-x11";
-  #   openFirewall = true;
-  #   port = 3399;
-  # };
+  services.xrdp = {
+    enable = true;
+    defaultWindowManager = "startplasma-x11";
+    openFirewall = true;
+    port = 3399;
+  };
 
   # Configure keymap in X11
   services.xserver.xkb = {
@@ -134,7 +135,7 @@
 
   nix.settings.trusted-users = ["jose"];
 
-  # services.tailscale.enable = true;
+  services.tailscale.enable = true;
 
   # Enable touchpad support (enabled default in most desktopManager).
   # services.xserver.libinput.enable = true;
@@ -171,7 +172,6 @@
       kdePackages.filelight
       fzf
       ripgrep
-      yakuake
       pciutils
       usbutils
       logseq
@@ -191,14 +191,17 @@
       nix-index
       sqlitebrowser
       zoom-us
+      # litellm
       # wayland clipboard
+      jan
       wl-clipboard-rs
+      openssl
     ];
   };
 
   fonts.packages = with pkgs; [
     eb-garamond
-    nerdfonts
+    nerd-fonts.jetbrains-mono
   ];
 
   # Set the default shell to zsh
@@ -217,6 +220,27 @@
   services.hardware.bolt.enable = true;
 
   services.cron.enable = true;
+
+  # services.litellm = {
+  #   enable = true;
+  #   environment = {
+  #     LITELLM_MASTER_KEY = "sk-1234";
+  #     LITELLM_SALT_KEY = "sk-As2OOjf8";
+  #     # DATABASE_URL= "postgres://litellm:litellm@0.0.0.0:5432/litellm";
+  #   };
+  # };
+  #
+  services.mullvad-vpn.enable = true;
+  networking.nameservers = [ "1.1.1.1#one.one.one.one" "1.0.0.1#one.one.one.one" ];
+  # services.resolved.enable = true;
+  services.resolved = {
+    enable = true;
+    dnssec = "true";
+    domains = [ "~." ];
+    fallbackDns = [ "1.1.1.1#one.one.one.one" "1.0.0.1#one.one.one.one" ];
+    dnsovertls = "true";
+  };
+
 
   # temporary until logseq is updated
   nixpkgs.config.permittedInsecurePackages = [
@@ -260,6 +284,7 @@
       # pinentry-gtk2
   ];
 
+
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
   # programs.mtr.enable = true;
@@ -272,6 +297,7 @@
 
   # Enable the OpenSSH daemon.
   # services.openssh.enable = true;
+  # services.litellm.enable = true;
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];

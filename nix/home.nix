@@ -2,7 +2,7 @@
 let
   shellAliases = {
       nrs = "sudo nixos-rebuild switch --flake /run/media/jose/SHARED_STRG/dotfiles/nix/";
-      nrsu = "sudo nixos-rebuild switch --update --flake /run/media/jose/SHARED_STRG/dotfiles/nix/";
+      nrsu = "sudo nixos-rebuild switch --recreate-lock-file --flake /run/media/jose/SHARED_STRG/dotfiles/nix/";
       enc = "nvim /run/media/jose/SHARED_STRG/dotfiles/nix/configuration.nix";
       evc = "nvim /run/media/jose/SHARED_STRG/dotfiles/nvim/init.lua";
       ds = "devenv shell";
@@ -51,6 +51,7 @@ in
     gparted
     # bitwarden
     lazygit
+    rclone
 
     #c
     clang
@@ -75,6 +76,14 @@ in
 
     # rustdesk
     tigervnc
+
+    # promptfoo
+    # open-webui
+    local-ai
+
+
+
+    plantuml
   ];
 
   programs.git = {
